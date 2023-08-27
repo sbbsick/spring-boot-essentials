@@ -1,21 +1,19 @@
 package academy.devdojo.springboot2.controller;
 
 import academy.devdojo.springboot2.domain.Anime;
-import academy.devdojo.springboot2.mapper.AnimeMapper;
 import academy.devdojo.springboot2.requests.AnimePostRequestDto;
 import academy.devdojo.springboot2.requests.AnimePuttRequestDto;
 import academy.devdojo.springboot2.service.AnimeService;
 import academy.devdojo.springboot2.util.DateUtil;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -29,11 +27,21 @@ public class AnimeController {
     private final AnimeService animeService;
 
     @GetMapping
-    public ResponseEntity<List<Anime>> list() {
+    public ResponseEntity<Page<Anime>> list(Pageable pageable) { // Pageable -> Interface para paginação
         // Cria um objeto ResponseEntity com o status 200 e o body com a lista de animes
         //ResponseEntity<List<Anime>> body =
         log.info(dateUtil.formatLocalDateTimeToDatabaseStyle(LocalDateTime.now()));
-        return ResponseEntity.ok().body(animeService.listAll());
+        return ResponseEntity.ok().body(animeService.listAll(pageable));
+    }
+
+    @GetMapping(path = "/listAll") // Path passando um nome como parâmetro na url
+    public ResponseEntity<List<Anime>> listAllNonPageable() { // @RequestParam -> Pega o parâmetro passado na url e atribui ao parâmetro name
+        return ResponseEntity.ok().body(animeService.listAllNonPageable());
+    }
+
+    @GetMapping(path = "/find") // Path passando um nome como parâmetro na url
+    public ResponseEntity<List<Anime>> findByName(@RequestParam String name) { // @RequestParam -> Pega o parâmetro passado na url e atribui ao parâmetro name
+        return ResponseEntity.ok().body(animeService.findByName(name));
     }
 
     @GetMapping(path = "/{id}") // Path passando um id como parâmetro na url
