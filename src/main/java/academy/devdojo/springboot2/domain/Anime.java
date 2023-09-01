@@ -5,6 +5,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,5 +24,8 @@ public class Anime {
     @Id // Annotation para definir o atributo id como chave primária
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Annotation para definir o atributo id como auto incremento
     private Long id;
+
+    @NotBlank
+    @NotNull(message = "The anime name cannot be null")
     private String name;
 }
